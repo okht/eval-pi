@@ -1,0 +1,32 @@
+# Credentials and local environment
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Dependencies and caches
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated output
+dist/
+build/
+coverage/
+*.log
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Local logo working files; shared assets live in eval-pi-design-system
+/assets/brand/
