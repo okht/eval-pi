@@ -4,7 +4,7 @@
 
 <h1 align="center">EvalPi</h1>
 
-<p align="center">面向 AI 产品经理的自动评测 Agent，让每次改进都有评测依据。</p>
-<p align="center">An evaluation agent for AI product teams.</p>
+<p align="center">一句话完成 Agent 的评测与调优。</p>
+<p align="center">Evaluate and optimize agents with a single instruction.</p>
 
-EvalPi 希望从 PRD 和业务标准出发，帮助产品经理生成评测用例、比较模型表现、复核 Badcase，并验证后续改动的效果。产品经理描述需求与判定标准，由系统辅助生成可查看、可修改的评测 Prompt。
+EvalPi 面向 AI 产品经理，希望让用户结合 PRD 和评测标准，用一句话完成 Agent 的评测、问题分析、调优与效果验证。
