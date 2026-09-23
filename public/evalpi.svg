@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1254" height="1254" viewBox="0 0 1254 1254" role="img" aria-labelledby="title desc">
+  <title id="title">eval-pi logo — transparent</title>
+  <desc id="desc">Vector reconstruction of the supplied logo, preserving its composition and median colors. Coral upper shape, blue body, and yellow square; background and openings are transparent.</desc>
+  <g id="logo">
+    <path id="coral" fill="#EF8D7E" d="M127.5 143.5H878V563H650.5V346.5H360V348.5H127.5Z"/>
+    <path id="blue" fill="#4D99BF" d="M127.5 348.5H360V563.5H650.5V563H878V762.5H360V890H849.5V1088.5H127.5Z"/>
+    <rect id="yellow" x="931.5" y="890" width="197.5" height="198.5" fill="#F0BA55"/>
+  </g>
+</svg>

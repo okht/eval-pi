@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/okht/eval-pi-design-system/main/assets/logo/eval-pi-logo-transparent.svg" width="128" alt="EvalPi logo" />
+  <img src="public/evalpi.svg" width="128" alt="EvalPi logo" />
 </p>
 
 <h1 align="center">EvalPi</h1>
