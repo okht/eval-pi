@@ -4,78 +4,79 @@
 
 <h1 align="center">EvalPi</h1>
 
-<p align="center">一句话完成 Agent 的评测与调优。</p>
-<p align="center">Evaluate and optimize agents with a single instruction.</p>
+<p align="center">Evaluate and improve AI products with a single instruction.</p>
 
-EvalPi 面向 AI 产品经理，希望让用户结合 PRD 和评测标准，用一句话完成 Agent 的评测、问题分析、调优与效果验证。
+EvalPi is a desktop application for AI product evaluation, including agents and workflows. Its goal is to turn natural-language requirements, product documents, and evaluation criteria into a complete cycle of evaluation, diagnosis, improvement, and verification.
 
-## 当前可用能力
+## Current capabilities
 
-当前已实现第一条本地评测链路：Electron 桌面应用与 React 工作区、Pi 模型连接、项目读取、方案确认、实际执行、批量复核和报告交付。
+The first local evaluation workflow is implemented: an Electron desktop app and React workspace, model connections through Pi, project inspection, plan confirmation, execution, batch review, and report delivery.
 
-- **模型连接**：Pi SDK 提供 ChatGPT OAuth 登录与 API Key 配置，支持选择模型和 OpenAI 兼容服务。2026-10-02 已用用户完成授权的 ChatGPT 订阅验证 `gpt-6.1-sol` 主 Agent 生成方案、8 次批量独立 Judge 评分及基于保存证据的结果复述；其他账号、模型及额度仍需分别验证。
-- **对话与方案**：主 Agent 根据应用提供的项目摘要和用户目标交流，提交未确认的评测草案。执行由应用控制，用户确认当前方案后才能开始。
-- **本地项目执行**：读取项目的 `evalpi.json`，调用既有 Node Workflow 入口。任意文件夹尚不能自动变成可运行的评测项目，需要提供适配协议与入口。
-- **重复与隔离**：使用 Promptfoo 调度；每次尝试使用独立子进程、session ID 和临时工作目录，采集输出、Trace 与可选业务状态。同一 Case 内的多轮上下文由入口负责处理。
-- **判定与复核**：支持明确规则检查和独立 LLM Judge；明确业务规则失败保留为失败。执行证据在模型评分前保存，评分失败、取消和业务失败分别记录；未完成评分可基于原证据重试，无需重新执行被测项目。人工批量判定、评分重试与自动复核单独留档。
-- **报告**：根据实际执行生成 HTML 预览、PDF、CSV、JSONL 和 JSON 快照，区分原始规则、模型评分、人工判断与重试结果。报告入口显示在对话中，重开页面可恢复当前批次预览；PDF 排版失败时保留 HTML 与附录。
-- **本机保存**：保存项目、方案、运行和复核状态；恢复时读取较新的运行快照，运行中批次标记为中断，已有执行证据保留。主 Agent 与 Judge 支持超时和取消。API Key 仅保存在当前进程内存，OAuth 凭据使用本应用独立的本机目录。
+- **Model connections:** The Pi SDK provides ChatGPT OAuth sign-in and API key configuration, with model selection and OpenAI-compatible endpoints. On October 2, 2026, an authorized ChatGPT subscription was used to verify `gpt-6.1-sol` planning, a batch of eight independent Judge calls, and summaries grounded in saved execution evidence. Access and limits for other accounts and models require separate verification.
+- **Conversation and planning:** The planning agent uses the project summary supplied by the app and the user's goal to propose an unconfirmed evaluation plan. The app controls execution, which starts only after the user confirms the current plan.
+- **Local project execution:** The runner reads the project's `evalpi.json` and invokes an existing Node.js workflow entry point. Projects currently need an adapter and a declared entry point; automatic adaptation of arbitrary folders is not implemented.
+- **Repetition and isolation:** Promptfoo schedules runs. Each attempt uses a separate child process, session ID, and temporary working directory, capturing output, traces, and optional business state. The project entry point manages any multi-turn context needed within a single case.
+- **Judging and review:** Explicit rule checks and an independent LLM Judge are supported. An observed business-rule failure remains a failure. Execution evidence is saved before model grading; grading errors, cancellations, and business failures are recorded separately. Incomplete grading can be retried against saved evidence without executing the target again. Human batch decisions, grading retries, and automated reviews have separate records.
+- **Reports:** Actual run records produce an HTML preview, PDF, CSV, JSONL, and a JSON snapshot. Reports distinguish rule results, model judgments, human decisions, and retry results. Report links appear in the conversation, and the current report preview can be restored after reopening the page. HTML and appendices remain available if PDF rendering fails.
+- **Local persistence:** Projects, plans, runs, and review state are saved locally. Recovery loads the newer run snapshot and marks unfinished runs as interrupted while preserving their evidence. The planning agent and Judge support timeouts and cancellation. API keys stay in the current process's memory; OAuth credentials use a dedicated local directory for this app.
 
-自动修改代码、持续调优、独立盲测及任意 Agent 自动适配尚未实现。当前报告描述本批实际执行，不生成尚未发生的调优效果或费用。
+Automatic code modification, continuous optimization, independent blind testing of target improvements, and automatic adaptation of arbitrary agents are not yet implemented. Reports describe actual executions and do not invent improvement results or costs.
 
-## 启动
+## Getting started
 
-需要 Node.js 22.19 或更高版本、npm。Windows 请使用 PowerShell 7（`pwsh.exe`）。首次安装依赖：
+Requirements: Node.js 22.19 or later and npm. On Windows, use PowerShell 7 (`pwsh.exe`). Install dependencies:
 
 ```text
 npm install
 ```
 
-浏览器开发模式，同时启动 Vite 与本机运行服务：
+For browser development, start Vite and the local runtime service together:
 
 ```text
 npm run dev:full
 ```
 
-访问 [本地工作区](http://127.0.0.1:5173/)。Vite 使用端口 5173，本机服务使用端口 4317。桌面模式会先构建前端，再启动 Electron 与独立后台进程：
+Open the [local workspace](http://127.0.0.1:5173/). Vite uses port 5173, and the runtime service uses port 4317. Desktop mode builds the frontend, then launches Electron and a separate backend process:
 
 ```text
 npm run desktop
 ```
 
-检查命令：
+Run the checks:
 
 ```text
 npm test
 npm run build
 ```
 
-2026-10-02 最新验证结果为 111 项自动化测试通过，前端构建通过。测试覆盖原有 HTTP、模型、报告、执行器、运行时和开源模型适配器，以及新增的 Judge 数据来源、标签隔离、指标分母、重复稳定性、取消与验收报告边界。`npm run dev` 仅启动前端，适合查看静态演示；实际工作区操作需要 `dev:full` 或桌面模式。
+As of October 2, 2026, all 111 automated tests and the frontend build pass. Coverage includes HTTP, models, reports, execution, runtime state, the open-source model adapter, Judge data provenance, reference-label isolation, metric denominators, repeat consistency, cancellation, and validation-report boundaries. `npm run dev` starts only the frontend for viewing static demos; live workspace operations require `dev:full` or desktop mode.
 
-## 先跑通内置客服项目
+The current application interface and several linked project documents are in Chinese.
 
-1. 在真实工作区选择内置客服验证项目，或选择 `examples/customer-service` 文件夹。
-2. 查看方案并确认，点击「开始评测」。这个确定性项目无需模型账号。
-3. 观察 4 个 Case 各重复 3 次，共 12 次执行；预期为 6 次通过、6 次失败。
-4. 批量复核问题，在对话中输入「生成评测报告」，查看本批 HTML、PDF 与附录。
+## Try the built-in customer-service project
 
-该项目实际启动进程并写入测试业务状态，故意保留虚假成功承诺和重复提交两个缺陷，适合验证链路；结果不能代表真实大模型质量。接入自己的项目请参考 [Node Workflow 适配协议](examples/customer-service/README.md) 和 [示例 manifest](examples/customer-service/evalpi.json)。
+1. Select the built-in customer-service validation project in the live workspace, or select the `examples/customer-service` folder.
+2. Review and confirm the plan, then start the evaluation. This deterministic project does not require a model account.
+3. Run four cases three times each, for 12 executions. The expected results are six passes and six failures.
+4. Review issues in a batch, then enter `/report` in chat to generate the HTML report, PDF, and appendices.
 
-连接模型后，已通过自然语言将同一批 4 个案例改为 LLM 评分、每例重复 2 次，案例输入、预期与标准保持不变。主 Agent 生成待确认草案，经确认后实际执行 8 次并完成 8 次 `gpt-6.1-sol` 评分：4 次通过、4 次失败、0 次待定、0 次异常，8 个独立 session。对应三页 PDF 已逐页目视验收。被测对象仍为上述确定性程序，主 Agent 和 Judge 使用真实模型；此验证不代表 Judge 准确率或真实客服模型质量已验收。评分失败重试、取消及恢复通过受控模拟测试，未人为制造真实服务故障。
+This project starts real processes and writes test business state. It deliberately includes false success claims and duplicate submissions to validate the evaluation workflow. Its results do not measure a real language model's quality. To connect your own project, see the [Node.js workflow adapter contract](examples/customer-service/README.md) and [example manifest](examples/customer-service/evalpi.json).
 
-评测器会在每次启动前核对入口文件指纹，发现变更后停止剩余执行。进程和工作目录隔离不提供操作系统级沙箱；外部数据库、共享账号和远程服务的状态需要适配器自行隔离。依赖文件及外部服务版本尚未冻结。
+With a model connected, the same four cases were switched through conversation to LLM grading with two repeats per case, keeping their inputs, expected behavior, and criteria unchanged. The planning agent created an unconfirmed draft; after confirmation, the app completed eight target executions and eight `gpt-6.1-sol` judgments: four passes, four failures, no pending results, and no errors, across eight independent sessions. All pages of the resulting three-page PDF were visually checked. The target remained the deterministic fixture, while planning and judging used a real model. This run alone does not establish Judge accuracy or real customer-service model quality. Grading retries, cancellation, and recovery were tested with controlled mocks; real service failures were not deliberately induced.
 
-产品方向见 [产品定义](docs/产品定义.md)，早期框架讨论见 [技术选型建议](docs/技术选型建议.md)，本轮实现与验证边界见 [真实评测链路验收](docs/真实评测链路验收.md)。
+The runner checks the entry file's fingerprint before each execution and stops remaining attempts if it changes. Process and working-directory isolation do not provide an operating-system sandbox. Adapters must isolate state in external databases, shared accounts, and remote services. Dependency files and external service versions are not yet frozen.
 
-## 评测真实开源 Agent
+See the [product definition](docs/产品定义.md), [early technology choices](docs/技术选型建议.md), and [execution validation record](docs/真实评测链路验收.md) for the product direction, implementation details, and verification boundaries.
 
-已加入 [OpenAI 官方客服多 Agent 示例的适配](examples/openai-customer-service/README.md)，固定上游提交与 SDK 版本，保留三个 Agent 的提示词、工具和转接逻辑。通过现有 ChatGPT 订阅运行真实模型，业务工具沿用上游模拟实现；每条用例及重复均独立。准备步骤、测试范围和证据边界见示例说明。较长的 Agent 流程现在可配置每例最多 180 秒，原默认超时不变。
+## Evaluate a real open-source agent
 
-已通过应用完成 5 类场景各 2 次的正式批次：10/10 通过，目标内部真实调用模型 32 次，另有 10 次独立 Judge 评分；报告为 2 页。完整结果和覆盖边界见 [开源客服 Agent 实测](docs/开源客服Agent实测.md)。这批小样本基线结果不表示真实航空业务或全面模型质量已经验收。
+An [adapter for OpenAI's official customer-service multi-agent example](examples/openai-customer-service/README.md) is included. It pins the upstream commit and SDK version while preserving the prompts, tools, and handoffs of its three agents. Real model calls use the existing ChatGPT subscription connection; business tools retain the upstream mock implementation. Each case and repeat runs independently. See the example documentation for setup, coverage, and evidence limitations. Longer agent workflows can use a timeout of up to 180 seconds per case; the existing default is unchanged.
 
-## 验收打分器自身
+A formal batch completed through the app covered five scenarios with two repeats each: 10/10 passed, with 32 model calls inside the target and 10 additional independent Judge calls. The report has two pages. See the [open-source agent evaluation record](docs/开源客服Agent实测.md) for the complete results and coverage. This small baseline does not establish readiness for real airline operations or comprehensive model quality.
 
-已加入固定版本的 RAGTruth QA 人工标注子集（48 条独立来源）与 12 条构造的证据契约探针。工程入口直接复用应用现有 Judge，输出误报、漏判、待定、异常、混淆矩阵与重复稳定性。参考标签不进入模型上下文；开发集、保留集与构造案例分开统计，重复调用不增加独立样本数。
+## Validate the Judge
+
+The repository includes a pinned RAGTruth QA subset with human annotations from 48 distinct source groups, plus 12 constructed cases that test evidence-handling requirements. The benchmark uses the app's existing Judge and reports false positives, false negatives, pending judgments, errors, confusion matrices, and repeat consistency. Reference labels never enter the model context. Development, held-out, and constructed sets are reported separately; repeated calls do not increase the number of independent samples.
 
 ```text
 npm run benchmark:judge
@@ -83,37 +84,37 @@ npm run benchmark:judge -- --run --output output/judge-benchmark/my-baseline
 node scripts/report-judge-benchmark.mjs output/judge-benchmark/my-baseline output/pdf/my-judge-report --pdf
 ```
 
-第一条仅预览预算；显式加 `--run` 才调用模型。默认 60 Case × 2 次，复用本机 EvalPi 订阅连接，不修改当前项目批次。详细来源、过滤口径、CLI 参数和证据边界见 [Judge 基准说明](benchmarks/judge/README.md)。该能力目前通过 CLI 使用，尚未接入应用内聊天与批量复核界面。
+The first command only previews the call budget. Model calls require the explicit `--run` flag. The default is 60 cases with two repeats each, using the local EvalPi subscription connection without changing the current project batch. See the [Judge benchmark documentation](benchmarks/judge/README.md) for provenance, filtering, CLI options, and limitations. This capability currently uses a CLI and has not yet been integrated into the app's conversation or batch-review interface.
 
-已完成 120 次真实评分：人工开发集首轮匹配 18/24，保留验收集 22/24，构造探针 12/12；8 个参考标签分歧进入待人工复核清单。完整人工组为 40/48，不能只据保留组的 91.7% 宣布 Judge 合格。测量条件、引用口径缺口和最终两页报告见 [Judge 可靠性验收](docs/Judge可靠性验收.md)。
+A total of 120 real Judge calls have been completed. First-repeat agreement with reference labels was 18/24 on the human-annotated development set, 22/24 on the held-out set, and 12/12 on the constructed cases. Eight disagreements were queued for human review. Agreement across the full human-annotated set was 40/48; the held-out result of 91.7% alone does not establish Judge reliability. See the [Judge validation record](docs/Judge可靠性验收.md) for measurement conditions, citation-checking gaps, and the final two-page report details.
 
-## 真实工作区与历史视觉演示
+## Live workspace and earlier visual demos
 
-| 路径 | 用途与数据 |
+| Route | Purpose and data |
 | --- | --- |
-| `/` | 真实工作区，连接本机服务，显示实际项目、执行记录与报告。 |
-| `/demo` | 原前端交互演示，使用模拟客服数据和模拟调优进度，不调用运行服务。 |
-| `/report-preview` | 三页客服报告的独立视觉演示，使用固定示例数据。 |
+| `/` | Live workspace connected to the local service, showing actual projects, execution records, and reports. |
+| `/demo` | Earlier frontend interaction demo with simulated customer-service data and optimization progress. It does not call the runtime service. |
+| `/report-preview` | Standalone visual preview of a three-page customer-service report using fixed sample data. |
 
-`/demo` 保留对话、侧栏、批量复核、暂停与调优进度的早期设计。演示中可输入「生成评测报告」「生成 HTML 报告」或「生成 Markdown 报告」体验文件交付；这些命令及模拟进度不表示真实工作区已具备相同的调优和 Markdown 导出能力。演示状态保存在浏览器内，可通过工作区菜单重新开始。
+`/demo` preserves the early conversation, sidebar, batch review, pause, and optimization-progress design. Enter `PDF`, `HTML`, or `Markdown` in the demo chat to try its simulated report delivery. These interactions and simulated progress do not imply that the live workspace supports the same optimization or Markdown export capabilities. Demo state is stored in the browser and can be reset through the workspace menu.
 
-## 报告视觉预览
+## Report design preview
 
-在开发服务中访问 [报告视觉演示](http://127.0.0.1:5173/report-preview)，可单独阅读 Pi 风格的固定示例报告，并从页面文件链接生成 PDF。`/demo` 侧栏使用同一套静态报告组件。
+With the development server running, open the [report design preview](http://127.0.0.1:5173/report-preview) to inspect the fixed sample report inspired by Pi and generate a PDF from its file link. The `/demo` sidebar uses the same static report component.
 
-运行 `node scripts/export-report-preview.mjs` 会在 `output/pdf` 生成三页 PDF、嵌入字体的离线 HTML 和两份对应附录。报告仍使用客服 Agent 示例数据。
+Running `node scripts/export-report-preview.mjs` generates a three-page PDF, an offline HTML file with embedded fonts, and two matching appendices under `output/pdf`. These artifacts still use sample customer-service data.
 
-静态演示的字体来源与使用记录见 `public/fonts/SOURCES.md`。演示中文字体随应用提供，浏览器预览和示例 PDF 无需依赖本机安装的字体。
+Font sources and usage notes are documented in `public/fonts/SOURCES.md`. The static demo bundles its Chinese font subsets, so its browser preview and sample PDF do not depend on locally installed Chinese fonts.
 
-报告视觉规范的来源为私有仓库 [eval-pi-design-system](https://github.com/okht/eval-pi-design-system/tree/main/reports)，约束字体、颜色、Logo 和排版。根据材料自适应组织报告内容与篇幅属于产品后续方向；当前实测报告使用证据驱动的确定性模板，三页客服报告用于视觉演示。
+The report design specification comes from the private [eval-pi-design-system](https://github.com/okht/eval-pi-design-system/tree/main/reports) repository and defines typography, colors, logos, and layout. Adapting report structure and length to each project's evidence remains a planned capability. Current live reports use a deterministic template populated from execution evidence; the three-page customer-service report is a visual demo.
 
-在有权限的环境中检出设计系统后，同步并校验本地资源：
+If you have access to a local checkout of the design system, synchronize and validate the assets:
 
 ```text
 node scripts/sync-report-design.mjs ../eval-pi-design-system
 node scripts/sync-report-design.mjs ../eval-pi-design-system --check
 ```
 
-静态演示的网页预览、离线 HTML 与 PDF 使用 `src/design-system/reports/` 的主题和本地字体，浏览器无需访问私有仓库。中文字体目前是示例字符子集，不能直接覆盖任意项目正文。
+The static web preview, offline HTML, and PDF use `src/design-system/reports/` and local fonts. The browser does not need access to the private repository. The bundled Chinese fonts currently cover the sample text and may not contain every character needed for arbitrary project reports.
 
-真实工作区的报告由 `server/reports.mjs` 根据本批记录生成 HTML，再由 Electron 排版为 PDF。当前采用本机可用的中文系统字体（如 Microsoft YaHei、SimSun）及字体回退，延续相近的纸色、配色和研究报告层级，与静态演示的品牌字体子集实现分开。不同机器的字体可能影响分页；报告页数根据实际案例和证据长度变化。
+Live workspace reports are generated as HTML by `server/reports.mjs` and rendered to PDF by Electron. They currently use available system fonts, such as Microsoft YaHei and SimSun, with fallbacks, following a similar paper background, color palette, and research-report hierarchy. This rendering path is separate from the static demo's bundled brand-font subsets. Fonts on different machines can affect pagination, and report length varies with the cases and evidence included.
