@@ -1,0 +1,33 @@
+/* Generated from theme.json. Run node scripts/build-report-theme.mjs. */
+@font-face { font-family: 'EvalPi Plantin'; src: url('/fonts/PlantinNowVariable-Upright.woff2') format('woff2'); font-style: normal; font-weight: 400 800; font-display: swap; }
+@font-face { font-family: 'EvalPi Plantin'; src: url('/fonts/PlantinNowVariable-Italic.woff2') format('woff2'); font-style: italic; font-weight: 400 800; font-display: swap; }
+@font-face { font-family: 'EvalPi Serif'; src: url('/fonts/EvalPiSerif-Regular.ttf') format('truetype'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'EvalPi Serif'; src: url('/fonts/EvalPiSerif-Medium.ttf') format('truetype'); font-style: normal; font-weight: 500; font-display: swap; }
+@font-face { font-family: 'EvalPi Departure'; src: url('/fonts/DepartureMono-Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'EvalPi Commit'; src: url('/fonts/CommitMono-400-Regular.otf') format('opentype'); font-style: normal; font-weight: 400; font-display: swap; }
+
+.eval-report, .eval-report-standalone {
+  --report-paper: #f3f2f0;
+  --report-panel: #f3f2f0;
+  --report-parchment: #dacbc2;
+  --report-ink: #252f3d;
+  --report-copy: #384251;
+  --report-muted: #5c5752;
+  --report-line: #8b847d66;
+  --report-faint-line: #8b847d30;
+  --report-accent: #844f3b;
+  --report-terracotta: #b86b52;
+  --report-positive: #4b607c;
+  --report-pending: #844f3b;
+  --report-canvas: #ebe7e4;
+  --report-pdf-line: #b3ada7;
+  --report-baseline: #a89b91;
+  --report-metric-tint: #4b607c0c;
+  --report-track: #dacbc270;
+  --report-hover: #dacbc226;
+  --report-panelTint: #dacbc240;
+  --report-paper-border: #8b847d80;
+  --report-serif: 'EvalPi Plantin', 'EvalPi Serif', 'Songti SC', SimSun, serif;
+  --report-mono: 'EvalPi Departure', 'EvalPi Serif', monospace;
+  --report-code: 'EvalPi Commit', 'EvalPi Serif', monospace;
+}

@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/openai/openai-agents-js",
+  "commit": "58b08f846c28ef070118f628c4fb0e84d52ca110",
+  "sourcePath": "examples/customer-service/index.ts",
+  "sdkVersion": "0.18.0",
+  "originalSha256": "95c8e0a2264e2ac9b33579833f5dfacba818b7f9701f8c74c373a4a22352dd29",
+  "generatedSha256": "389ca85dabef4761315b02b3478e4aa7dffc982ac50f95241d94edcfec91fe73",
+  "adaptation": "Original Agent/tool/prompt/handoff definitions retained; upstream interactive CLI replaced by EvalPi JSON I/O. Model transport uses the Pi adapter. No business logic patch.",
+  "businessEnvironment": "Upstream mock FAQ and seat-update context; no real airline service."
+}

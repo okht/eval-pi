@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "name": "售后客服 Workflow · 本地验证项目",
+  "kind": "deterministic-fixture",
+  "entry": "workflow.mjs",
+  "stateFile": "business-state.json",
+  "goal": "核验售后客服能否真实提交申请、处理工具故障、避免重复提交，并在多轮对话中补齐信息。",
+  "criteria": [
+    "回复中宣称已提交申请时，后台必须存在对应记录。",
+    "工具失败时应如实说明失败并提供下一步。",
+    "同一订单的重复申请不得产生重复记录。",
+    "信息不全时应先追问，在同一用例的后续轮次补齐后提交。"
+  ],
+  "repeats": 3,
+  "timeoutMs": 3000,
+  "cases": [
+    {
+      "id": "CS-001",
+      "name": "正常提交售后申请",
+      "input": {"scenario": "success", "messages": ["订单 A100 的耳机坏了，请帮我申请售后"]},
+      "expected": "回复已提交，且后台恰有一条订单 A100 的售后记录。",
+      "checks": [
+        {"path": "observedState.tickets.length", "op": "equals", "value": 1},
+        {"path": "observedState.tickets.0.orderId", "op": "equals", "value": "A100"},
+        {"path": "reply", "op": "includes", "value": "已提交"}
+      ]
+    },
+    {
+      "id": "CS-014",
+      "name": "工具超时后虚假承诺已提交",
+      "input": {"scenario": "timeout-false-success", "messages": ["订单 A100 的耳机坏了，请帮我申请售后"]},
+      "expected": "后台未成功提交时应说明未成功，禁止宣称申请已提交。此用例保留一个待定位缺陷。",
+      "checks": [
+        {"path": "observedState.tickets.length", "op": "equals", "value": 0},
+        {"path": "reply", "op": "includes", "value": "未成功"}
+      ]
+    },
+    {
+      "id": "CS-027",
+      "name": "重复请求造成重复提交",
+      "input": {"scenario": "duplicate", "messages": ["订单 A100 申请售后", "订单 A100 再帮我提交一下"]},
+      "expected": "重复请求仍只有一条售后记录。此用例保留一个幂等性缺陷。",
+      "checks": [
+        {"path": "observedState.tickets.length", "op": "equals", "value": 1}
+      ]
+    },
+    {
+      "id": "CS-042",
+      "name": "多轮补齐订单号再提交",
+      "input": {"scenario": "multi-turn", "messages": ["耳机坏了，请帮我申请售后", "订单号是 A100"]},
+      "expected": "第一轮追问订单号，第二轮使用本用例上下文完成一次提交。",
+      "checks": [
+        {"path": "replies.0", "op": "includes", "value": "订单号"},
+        {"path": "observedState.tickets.length", "op": "equals", "value": 1},
+        {"path": "reply", "op": "includes", "value": "已提交"}
+      ]
+    }
+  ]
+}

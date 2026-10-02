@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "dataset": "ragtruth-qa",
+  "repository": "https://github.com/ParticleMedia/RAGTruth",
+  "revision": "c103204b9ce28d6bbad859304bf30de72b8ed8fe",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "dataset/response.jsonl",
+      "bytes": 21458735,
+      "sha256": "e4c2e4ac24fff676d8984cc61c35d791612fadc58015335d97dd632375e18073",
+      "url": "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/c103204b9ce28d6bbad859304bf30de72b8ed8fe/dataset/response.jsonl"
+    },
+    {
+      "path": "dataset/source_info.jsonl",
+      "bytes": 15117971,
+      "sha256": "0dffc26ea9f3c1c3d7c7e8336b56ef1646e3cec876edffcca3c9c624d12d578b",
+      "url": "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/c103204b9ce28d6bbad859304bf30de72b8ed8fe/dataset/source_info.jsonl"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1071,
+      "sha256": "b7fd7d6bdfe0cbba63c63a310914beb4a4acb8bf08da73849219f45385f5b244",
+      "url": "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/c103204b9ce28d6bbad859304bf30de72b8ed8fe/LICENSE"
+    }
+  ],
+  "selection": {
+    "algorithm": "source-grouped-sha256-v1",
+    "seed": "evalpi-ragtruth-qa-v1",
+    "filter": "Official test + QA + quality good; exclude any implicit_true or due_to_null span.",
+    "ordering": "Reserve 24 fail sources, then 24 distinct pass sources; SHA256 ranks select response, source, split, and presentation independently.",
+    "development": {
+      "pass": 12,
+      "fail": 12
+    },
+    "heldout": {
+      "pass": 12,
+      "fail": 12
+    },
+    "uniqueSources": 48,
+    "eligible": {
+      "responses": 837,
+      "sources": 150,
+      "pass": 715,
+      "fail": 122
+    }
+  },
+  "mapping": "No annotated hallucination spans = pass; one or more spans = fail. This checks source grounding only.",
+  "datasetSha256": "e05f1ab3b37af070b2b4b1569e41c1a025eca28c409abc396b41a3b3825eb0d5"
+}

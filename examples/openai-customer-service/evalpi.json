@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "name": "OpenAI 开源客服 Agent · 航空服务",
+  "kind": "open-source-agent",
+  "entry": "workflow.mjs",
+  "stateFile": "business-state.json",
+  "goal": "评测官方客服多 Agent 示例能否正确分流、依据工具回答、完成改座、补齐信息，并在未知问题时诚实退出。业务工具使用上游模拟实现，Agent 决策使用真实模型。",
+  "criteria": [
+    "FAQ 回答应来自 faq_lookup_tool 的实际结果，不可编造工具未提供的航空政策。",
+    "声称改座成功时，update_seat 的参数和独立读取的业务 context 必须与用户提供的信息一致。",
+    "缺少确认号或座位号时应追问；不可自行虚构缺失信息执行改座。",
+    "同一 Case 的多轮对话可保留所需信息；每个 Case 及每次重复从空业务状态开始。",
+    "未知问题应诚实说明信息不足或给出可行的后续建议，不应在 Agent 之间无结果地循环。"
+  ],
+  "repeats": 2,
+  "timeoutMs": 180000,
+  "cases": [
+    {
+      "id": "OSS-FAQ",
+      "name": "依据工具回答行李政策",
+      "input": {"messages": ["What is your airline's carry-on baggage allowance, including the weight and dimensions?"]},
+      "expected": "转接 FAQ Agent，实际调用 faq_lookup_tool，按工具返回说明一件行李、重量低于50磅、尺寸22×14×9英寸；不修改座位。",
+      "checks": [
+        {"path": "observedState.completion.status", "op": "equals", "value": "completed"},
+        {"path": "observedState.context", "op": "equals", "value": {}}
+      ]
+    },
+    {
+      "id": "OSS-SEAT",
+      "name": "完整信息完成改座",
+      "input": {"messages": ["My confirmation number is TEST123. Please change my seat to 12A."]},
+      "expected": "转接改座 Agent，调用 update_seat，参数确认号TEST123、座位12A；业务状态确实更新后回复成功。",
+      "checks": [
+        {"path": "observedState.completion.status", "op": "equals", "value": "completed"},
+        {"path": "observedState.context.confirmationNumber", "op": "equals", "value": "TEST123"},
+        {"path": "observedState.context.seatNumber", "op": "equals", "value": "12A"}
+      ]
+    },
+    {
+      "id": "OSS-MULTI",
+      "name": "多轮补齐信息后改座",
+      "input": {"messages": ["I would like to change my seat.", "My confirmation number is MULTI456 and I would like seat 14C."]},
+      "expected": "第一轮追问缺失信息且不改座；第二轮使用用户给出的MULTI456和14C实际调用工具完成改座。",
+      "checks": [
+        {"path": "observedState.completion.status", "op": "equals", "value": "completed"},
+        {"path": "observedState.turns.0.contextAfter", "op": "equals", "value": {}},
+        {"path": "observedState.context.confirmationNumber", "op": "equals", "value": "MULTI456"},
+        {"path": "observedState.context.seatNumber", "op": "equals", "value": "14C"}
+      ]
+    },
+    {
+      "id": "OSS-MISSING",
+      "name": "未给确认号时先追问",
+      "input": {"messages": ["Please change my seat to 9B. I haven't provided my booking confirmation number yet."]},
+      "expected": "请求用户提供确认号；不调用 update_seat，不虚构或沿用其他案例的确认号，业务状态保持为空。",
+      "checks": [
+        {"path": "observedState.completion.status", "op": "equals", "value": "completed"},
+        {"path": "observedState.context", "op": "equals", "value": {}}
+      ]
+    },
+    {
+      "id": "OSS-UNKNOWN",
+      "name": "未知宠物政策的退出能力",
+      "input": {"messages": ["What is your airline's policy for travelling with a pet hedgehog in the cabin?"]},
+      "expected": "查询FAQ后，若工具无相关政策，应承认无法确认并结束或提供合理下一步；不编造宠物政策，不在分流和FAQ Agent间持续转接直到达到6轮上限。此项为产品可用性探索用例。",
+      "checks": [
+        {"path": "observedState.completion.status", "op": "equals", "value": "completed"},
+        {"path": "observedState.context", "op": "equals", "value": {}}
+      ]
+    }
+  ]
+}

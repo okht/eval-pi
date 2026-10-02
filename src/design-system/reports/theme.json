@@ -1,0 +1,146 @@
+{
+  "version": "1.0.0",
+  "scope": "visual-only",
+  "colors": {
+    "paper": "#f3f2f0",
+    "panel": "#f3f2f0",
+    "parchment": "#dacbc2",
+    "ink": "#252f3d",
+    "copy": "#384251",
+    "muted": "#5c5752",
+    "line": "#8b847d66",
+    "faint-line": "#8b847d30",
+    "accent": "#844f3b",
+    "terracotta": "#b86b52",
+    "positive": "#4b607c",
+    "pending": "#844f3b",
+    "canvas": "#ebe7e4",
+    "pdf-line": "#b3ada7",
+    "baseline": "#a89b91",
+    "metric-tint": "#4b607c0c",
+    "track": "#dacbc270",
+    "hover": "#dacbc226",
+    "panelTint": "#dacbc240",
+    "paper-border": "#8b847d80"
+  },
+  "fontStacks": {
+    "serif": "'EvalPi Plantin', 'EvalPi Serif', 'Songti SC', SimSun, serif",
+    "mono": "'EvalPi Departure', 'EvalPi Serif', monospace",
+    "code": "'EvalPi Commit', 'EvalPi Serif', monospace"
+  },
+  "webFonts": [
+    {
+      "family": "EvalPi Plantin",
+      "file": "PlantinNowVariable-Upright.woff2",
+      "path": "/fonts/PlantinNowVariable-Upright.woff2",
+      "weight": "400 800",
+      "style": "normal",
+      "format": "woff2"
+    },
+    {
+      "family": "EvalPi Plantin",
+      "file": "PlantinNowVariable-Italic.woff2",
+      "path": "/fonts/PlantinNowVariable-Italic.woff2",
+      "weight": "400 800",
+      "style": "italic",
+      "format": "woff2"
+    },
+    {
+      "family": "EvalPi Serif",
+      "file": "EvalPiSerif-Regular.ttf",
+      "path": "/fonts/EvalPiSerif-Regular.ttf",
+      "weight": "400",
+      "style": "normal",
+      "format": "truetype"
+    },
+    {
+      "family": "EvalPi Serif",
+      "file": "EvalPiSerif-Medium.ttf",
+      "path": "/fonts/EvalPiSerif-Medium.ttf",
+      "weight": "500",
+      "style": "normal",
+      "format": "truetype"
+    },
+    {
+      "family": "EvalPi Departure",
+      "file": "DepartureMono-Regular.woff2",
+      "path": "/fonts/DepartureMono-Regular.woff2",
+      "weight": "400",
+      "style": "normal",
+      "format": "woff2"
+    },
+    {
+      "family": "EvalPi Commit",
+      "file": "CommitMono-400-Regular.otf",
+      "path": "/fonts/CommitMono-400-Regular.otf",
+      "weight": "400",
+      "style": "normal",
+      "format": "opentype"
+    }
+  ],
+  "pdfFonts": {
+    "serif": {
+      "family": "EvalPi Serif",
+      "files": [
+        {
+          "file": "EvalPiSerif-Regular.ttf",
+          "weight": 400
+        },
+        {
+          "file": "EvalPiSerif-Medium.ttf",
+          "weight": 500
+        }
+      ]
+    },
+    "latin": {
+      "family": "EvalPi Plantin",
+      "files": [
+        {
+          "file": "Plantin-Regular.ttf",
+          "weight": 400
+        },
+        {
+          "file": "Plantin-Medium.ttf",
+          "weight": 500
+        }
+      ]
+    },
+    "mono": {
+      "family": "EvalPi Departure Mono",
+      "files": [
+        {
+          "file": "DepartureMono-Regular.ttf",
+          "weight": 400
+        }
+      ]
+    },
+    "code": {
+      "family": "EvalPi Commit Mono",
+      "files": [
+        {
+          "file": "CommitMono-Regular.ttf",
+          "weight": 400
+        }
+      ]
+    }
+  },
+  "logo": {
+    "viewBox": "127.5 143.5 1001.5 945",
+    "black": "#141414",
+    "watermarkOpacity": 0.13,
+    "shapes": [
+      {
+        "fill": "#EF8D7E",
+        "d": "M127.5 143.5H878V563H650.5V346.5H360V348.5H127.5Z"
+      },
+      {
+        "fill": "#4D99BF",
+        "d": "M127.5 348.5H360V563.5H650.5V563H878V762.5H360V890H849.5V1088.5H127.5Z"
+      },
+      {
+        "fill": "#F0BA55",
+        "d": "M931.5 890H1129V1088.5H931.5Z"
+      }
+    ]
+  }
+}

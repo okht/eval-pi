@@ -1,0 +1,36 @@
+{
+  "name": "evalpi-desktop-preview",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": ["examples/openai-customer-service"],
+  "scripts": {
+    "dev": "vite",
+    "dev:full": "node scripts/dev-full.mjs",
+    "server": "node server/index.mjs",
+    "desktop": "npm run build && node scripts/desktop-start.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "benchmark:judge": "node scripts/benchmark-judge.mjs",
+    "benchmark:prepare": "node scripts/prepare-judge-benchmark.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@earendil-works/pi-ai": "1.0.0",
+    "@earendil-works/pi-coding-agent": "1.0.0",
+    "@react-pdf/renderer": "^4.9.0",
+    "lucide-react": "^1.47.0",
+    "promptfoo": "0.123.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "44.5.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}

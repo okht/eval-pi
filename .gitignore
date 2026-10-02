@@ -30,3 +30,14 @@ Thumbs.db
 
 # Local logo working files; shared assets live in eval-pi-design-system
 /assets/brand/
+
+# Local preview preparation and generated checks
+/tmp/
+/output/
+*.tsbuildinfo
+
+# Runtime state is private and kept outside the checkout by default
+/.evalpi/
+
+# Machine-specific adapter paths; contains no copied credentials
+examples/openai-customer-service/.evalpi-local.json

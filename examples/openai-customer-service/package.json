@@ -1,0 +1,11 @@
+{
+  "name": "evalpi-openai-customer-service",
+  "private": true,
+  "type": "module",
+  "description": "Pinned OpenAI customer-service example with an EvalPi execution adapter",
+  "dependencies": {
+    "@openai/agents": "0.18.0",
+    "@openai/agents-core": "0.18.0",
+    "zod": "4.3.5"
+  }
+}
