@@ -6,7 +6,7 @@
 
 <p align="center">Evaluate and improve AI products with a single instruction.</p>
 
-EvalPi is a desktop application for AI product evaluation, including agents and workflows. Its goal is to turn natural-language requirements, product documents, and evaluation criteria into a complete cycle of evaluation, diagnosis, improvement, and verification.
+EvalPi evaluates AI products, including agents and workflows, through a desktop application or a local Codex plugin. Its goal is to turn natural-language requirements, product documents, and evaluation criteria into a complete cycle of evaluation, diagnosis, improvement, and verification.
 
 ## Current capabilities
 
@@ -49,9 +49,23 @@ npm test
 npm run build
 ```
 
-As of October 2, 2026, all 111 automated tests and the frontend build pass. Coverage includes HTTP, models, reports, execution, runtime state, the open-source model adapter, Judge data provenance, reference-label isolation, metric denominators, repeat consistency, cancellation, and validation-report boundaries. `npm run dev` starts only the frontend for viewing static demos; live workspace operations require `dev:full` or desktop mode.
+As of October 3, 2026, all 138 automated tests and the frontend build pass. Coverage includes HTTP, models, reports, execution, runtime state, the open-source model adapter, Judge data provenance, reference-label isolation, metric denominators, repeat consistency, cancellation, validation-report boundaries, MCP protocol handling, plugin packaging, and evaluation-session isolation. `npm run dev` starts only the frontend for viewing static demos; live workspace operations require `dev:full` or desktop mode.
 
 The current application interface and several linked project documents are in Chinese.
+
+## Use EvalPi in Codex
+
+The local plugin packages an evaluation skill and an MCP server. Codex reads the project and drafts the plan; EvalPi validates the plan, executes repeated trials, records independent judgments and batch reviews, and returns report files. Each evaluation session has separate state, and updated plans require confirmation again.
+
+After installing this repository's dependencies, prepare the machine-local plugin:
+
+```text
+npm run plugin:prepare
+```
+
+Register the printed marketplace directory with `codex plugin marketplace add <absolute-path>`, then install **EvalPi** from **EvalPi Local** in the plugin directory. In clients supporting CLI installation, use `codex plugin add evalpi@evalpi-local`. Start a new chat and ask EvalPi to evaluate a local project.
+
+Preparation records absolute paths to this checkout and its Node executable, so they must remain available after installation. The generated package stays under the ignored `output/` directory. Judge credentials are configured separately; the plugin does not automatically inherit the Codex conversation's model connection. A working `evalpi.json` adapter is still required. See the [Codex plugin setup and limits](docs/codex-plugin.md) for model setup, tools, and recovery.
 
 ## Try the built-in customer-service project
 

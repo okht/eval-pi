@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "evalpi",
+  "version": "0.1.0",
+  "description": "Evaluate AI products with repeatable runs, independent grading, trace evidence, and reviewable reports.",
+  "author": { "name": "okht" },
+  "repository": "https://github.com/okht/eval-pi",
+  "keywords": ["evaluation", "agents", "workflows", "testing"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "EvalPi",
+        "shortDescription": "Evaluate AI products through conversation",
+        "longDescription": "Agree on an evaluation plan, run isolated trials, review failures in batches, and inspect reports backed by saved evidence.",
+        "developerName": "okht",
+        "category": "Developer Tools",
+        "capabilities": ["Read", "Write"],
+        "defaultPrompt": ["Use EvalPi to evaluate this agent and investigate the failures."]
+      }
+    }
+  }
+}

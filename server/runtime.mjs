@@ -9,7 +9,7 @@ import { createModels } from './models.mjs';
 import { createReport } from './reports.mjs';
 import { MIN_TARGET_TIMEOUT_MS, MAX_TARGET_TIMEOUT_MS } from './limits.mjs';
 
-export async function createRuntime({ dataDir, appRoot, modelsFactory = createModels, runner = runEvaluation, pdfRenderer }) {
+export async function createRuntime({ dataDir, appRoot, modelsDataDir = path.join(dataDir, 'models'), modelsFactory = createModels, runner = runEvaluation, pdfRenderer }) {
   await mkdir(dataDir, { recursive: true });
   const stateFile = path.join(dataDir, 'workspace.json');
   const persist = serialWriter(stateFile);
@@ -47,7 +47,7 @@ export async function createRuntime({ dataDir, appRoot, modelsFactory = createMo
     await persist({ ...publicState, revision });
     emit();
   }
-  const models = await modelsFactory({ dataDir: path.join(dataDir, 'models'), onAuthUpdate: async (status, error) => {
+  const models = await modelsFactory({ dataDir: modelsDataDir, onAuthUpdate: async (status, error) => {
     if (status) state.model = status;
     if (error) state.error = String(error.message ?? error);
     state.activity = '';
@@ -119,6 +119,16 @@ export async function createRuntime({ dataDir, appRoot, modelsFactory = createMo
       });
     },
     async example() { return this.selectProject(path.join(appRoot, 'examples', 'customer-service')); },
+    async submitPlan(candidate) {
+      await locked(async () => {
+        if (!state.project) throw new Error('请先选择项目文件夹。');
+        const plan = validatePlan(candidate);
+        await projectRevision(state.project, plan.entry);
+        state.plan = plan; state.run = null; revision = null; state.error = null;
+        append('assistant', '评测方案已更新，请检查目标、标准、案例和运行次数后确认。', 'plan');
+      });
+      return snapshot();
+    },
     async configure(settings) { return locked(async () => { await models.configure(settings); state.model = await models.status(); return state.model; }); },
     async login() {
       requireIdle();
@@ -227,13 +237,15 @@ export async function createRuntime({ dataDir, appRoot, modelsFactory = createMo
       });
     },
     async cancel() { controller?.abort(); await models.cancelLogin(); return { ok: true }; },
-    async review(decisions) {
+    async review(decisions, expectedRunId) {
       requireIdle();
-      if (!state.run || !state.plan || !decisions || typeof decisions !== 'object' || Array.isArray(decisions)) throw new Error('当前没有可复核的执行结果。');
+      if (!state.run || !state.plan || state.run.planId !== state.plan.id || !decisions || typeof decisions !== 'object' || Array.isArray(decisions)) throw new Error('当前没有可复核的执行结果。');
+      if (expectedRunId !== undefined && state.run.id !== expectedRunId) throw new Error('评测批次已经变化，请重新查看当前执行结果。');
       const known = new Set(state.run.trials.map(t => t.caseId));
       for (const [id, decision] of Object.entries(decisions)) if (!known.has(id) || !['issue', 'clear', 'recheck'].includes(decision)) throw new Error('存在无效的案例或复核结论。');
+      const submittedDecisions = structuredClone(decisions);
       return background('正在保存复核结论并检查证据…', async signal => {
-      state.run.reviews = { ...state.run.reviews, ...decisions };
+      state.run.reviews = { ...state.run.reviews, ...submittedDecisions };
       for (const id of known) if (!state.run.reviews[id]) state.run.reviews[id] = 'recheck';
       const pendingIds = [...known].filter(id => state.run.reviews[id] === 'recheck');
       await writeJson(path.join(state.run.directory, 'run.json'), state.run);
